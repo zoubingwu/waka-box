@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const { WakaTimeClient, RANGE } = require("wakatime-client");
 const Octokit = require("@octokit/rest");
 
@@ -14,6 +15,7 @@ const octokit = new Octokit({ auth: `token ${githubToken}` });
 
 async function main() {
   const stats = await wakatime.getMyStats({ range: RANGE.LAST_7_DAYS });
+  console.log("stats: ", stats);
   await updateGist(stats);
 }
 
@@ -109,5 +111,10 @@ function unicodeProgressBar(p, style = 7, min_size = 20, max_size = 20) {
 }
 
 (async () => {
-  await main();
+  try {
+    await main();
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
 })();
